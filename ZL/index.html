@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>计科院学风建设督查表</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+        }
+        body {
+            font-family: 'Microsoft YaHei', 'SimHei', sans-serif;
+            background-color: #fff;
+            padding: 0;
+            margin: 0;
+        }
+        .container {
+            width: 100%;
+            min-height: 100%;
+            background-color: #fff;
+            padding: 15px 20px 12px 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        h1 {
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #000;
+            flex-shrink: 0;
+        }
+        .header-info {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 50px;
+            padding: 0 15px;
+            background-color: #fff;
+            border: 1px solid #000;
+            border-bottom: none;
+            flex-shrink: 0;
+            gap: 8px;
+            flex-wrap: nowrap;
+        }
+        .header-info .left {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 16px;
+            color: #000;
+            flex-wrap: nowrap;
+        }
+        .header-info .left span {
+            white-space: nowrap;
+        }
+        .header-info .left input {
+            width: 55px;
+            height: 36px;
+            padding: 0;
+            border: none;
+            background: transparent;
+            text-align: center;
+            font-size: 16px;
+            font-family: inherit;
+            border-radius: 0;
+            flex-shrink: 0;
+        }
+        .year-fixed {
+            font-size: 16px;
+            white-space: nowrap;
+        }
+        .header-info .left input[type="text"] {
+            width: 45px;
+        }
+        .header-info .left input::placeholder,
+        .header-info .right input::placeholder {
+            color: #999;
+            opacity: 1;
+        }
+        .header-info .right {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 16px;
+            color: #000;
+            flex-shrink: 0;
+            margin-left: 10px;
+        }
+        .header-info .right input {
+            flex: 1 0 auto;
+            min-width: 80px;
+            width: auto;
+            height: 36px;
+            padding: 0;
+            border: none;
+            background: transparent;
+            text-align: left;
+            font-size: 16px;
+            font-family: inherit;
+            border-radius: 0;
+            overflow: visible;
+        }
+        .table-wrapper {
+            flex: 1;
+            overflow: visible;
+            position: relative;
+        }
+        html::-webkit-scrollbar,
+        body::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        html::-webkit-scrollbar-track,
+        body::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        html::-webkit-scrollbar-thumb,
+        body::-webkit-scrollbar-thumb {
+            background: #ccc;
+            border-radius: 3px;
+        }
+        html::-webkit-scrollbar-thumb:hover,
+        body::-webkit-scrollbar-thumb:hover {
+            background: #999;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 1px solid #000;
+            font-size: 14px;
+            table-layout: fixed;
+        }
+        thead {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background-color: #fff;
+        }
+        thead tr {
+            background-color: #fff;
+        }
+        thead th {
+            position: relative;
+            background-color: #fff;
+            border: 1px solid #000 !important;
+            z-index: 11;
+        }
+        thead tr:last-child th {
+            border-bottom: 1px solid #000 !important;
+        }
+        thead th::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: -1px;
+            height: 1px;
+            background: #000;
+        }
+        table th, table td {
+            border: 1px solid #000;
+            padding: 0 4px;
+            text-align: center;
+            vertical-align: middle;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            height: 36px;
+            line-height: 36px;
+            background-color: #fff;
+        }
+        table th {
+            background-color: #fff;
+            font-weight: bold;
+            color: #000;
+        }
+        .colspan-5 {
+            background-color: #fff;
+        }
+        .td-red {
+            background-color: #ffcccc !important;
+        }
+        .leave-verify {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 15px 0;
+        }
+        .leave-label {
+            font-size: 28px;
+            margin: 0 15px;
+        }
+        .leave-select {
+            border: none;
+            background: transparent;
+            font-size: 28px;
+            font-family: inherit;
+            color: #999;
+            width: auto;
+            min-width: 36px;
+            padding: 0;
+            outline: none;
+            margin: 0;
+        }
+        .leave-select:focus {
+            background: transparent;
+        }
+        .leave-select.hided-arrow {
+            appearance: none;
+            -webkit-appearance: none;
+        }
+        .leave-select.hided-arrow::-ms-expand {
+            display: none;
+        }
+        .leave-hint {
+            font-size: 12px;
+            color: #666;
+            margin-left: 10px;
+        }
+        .note {
+            margin-top: 10px;
+            padding: 8px;
+            background-color: #fffef0;
+            border: 1px solid #ddd;
+            color: #000;
+            text-align: center;
+            flex-shrink: 0;
+            font-size: 13px;
+        }
+        .submit-section {
+            margin-top: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            flex-shrink: 0;
+        }
+        .submit-btn {
+            padding: 12px 40px;
+            font-size: 16px;
+            font-family: inherit;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .submit-btn:hover {
+            background-color: #0056b3;
+        }
+        .submit-btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        .message {
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 14px;
+            text-align: center;
+        }
+        .message.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .message.loading {
+            background-color: #cce5ff;
+            color: #004085;
+            border: 1px solid #b8daff;
+        }
+        input[type="number"], input[type="text"] {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            border: none;
+            background: transparent;
+            text-align: center;
+            font-size: 14px;
+            font-family: inherit;
+            outline: none;
+        }
+        input[type="number"]:focus, input[type="text"]:focus {
+            background-color: transparent;
+        }
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+        @media screen and (max-width: 768px) {
+            .container {
+                padding: 10px 12px 10px 12px;
+            }
+            h1 {
+                font-size: 18px;
+                margin-bottom: 8px;
+            }
+            .header-info {
+                height: 44px;
+                gap: 8px;
+                padding: 0 10px;
+            }
+            .header-info .left {
+                gap: 6px;
+                font-size: 13px;
+                flex-wrap: wrap;
+            }
+            .header-info .left input {
+                width: 48px;
+                height: 30px;
+                font-size: 13px;
+            }
+            .header-info .left input[type="text"] {
+                width: 40px;
+            }
+            .header-info .right {
+                font-size: 13px;
+            }
+            .header-info .right input {
+                width: 150px;
+                height: 30px;
+                font-size: 13px;
+            }
+            .table-wrapper {
+            }
+            table {
+                font-size: 12px;
+            }
+            table th, table td {
+                padding: 0 2px;
+                height: 32px;
+                line-height: 32px;
+            }
+            input[type="number"], input[type="text"] {
+                font-size: 12px;
+            }
+            .note {
+                font-size: 12px;
+                padding: 6px;
+                margin-top: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>计科院学风建设督查表</h1>
+        
+        <div class="header-info">
+            <div class="left">
+                <span class="year-fixed">2026</span>
+                <span>年</span>
+                <input type="number" name="month" placeholder="xx" min="1" max="12" style="width: 45px;">
+                <span>月</span>
+                <input type="number" name="day" placeholder="xx" min="1" max="31" style="width: 45px;">
+                <span>日</span>
+                <span>星期</span>
+                <input type="text" name="weekday" placeholder="xx" style="width: 45px;">
+                <span>第</span>
+                <input type="number" name="period" placeholder="xx" min="1" max="10" style="width: 40px;">
+                <span>节</span>
+            </div>
+            <div class="right">
+                <span>检查人:</span>
+                <input type="text" name="checker" placeholder="xx" class="checker-input" oninput="this.value = this.value.replace(/[<>\"'&]/g, '')">
+            </div>
+        </div>
+
+        <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th rowspan="2">班级</th>
+                    <th rowspan="2">辅导员</th>
+                    <th colspan="5" class="colspan-5">考勤</th>
+                    <th rowspan="2">睡觉</th>
+                    <th rowspan="2">带餐</th>
+                    <th rowspan="2">染发</th>
+                    <th rowspan="2">未带书</th>
+                    <th rowspan="2">玩手机</th>
+                    <th rowspan="2">卫生差</th>
+                    <th rowspan="2">总分</th>
+                </tr>
+                <tr>
+                    <th>应到</th>
+                    <th>实到</th>
+                    <th>请假</th>
+                    <th>旷课</th>
+                    <th>迟到</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>大数据2401</td><td>汪财源</td><td>30</td><td><input type="number" name="actual_big_data_2401"></td><td><input type="number" name="leave_big_data_2401"></td><td><input type="number" name="absent_big_data_2401"></td><td><input type="number" name="late_big_data_2401"></td><td><input type="number" name="sleeping_big_data_2401"></td><td><input type="number" name="food_big_data_2401"></td><td><input type="number" name="dyed_hair_big_data_2401"></td><td><input type="number" name="no_book_big_data_2401"></td><td><input type="number" name="phone_big_data_2401"></td><td><input type="number" name="hygiene_big_data_2401"></td><td><input type="number" name="score_big_data_2401"></td></tr>
+                <tr><td>电商2401</td><td>陈果</td><td>36</td><td><input type="number" name="actual_e_commerce_2401"></td><td><input type="number" name="leave_e_commerce_2401"></td><td><input type="number" name="absent_e_commerce_2401"></td><td><input type="number" name="late_e_commerce_2401"></td><td><input type="number" name="sleeping_e_commerce_2401"></td><td><input type="number" name="food_e_commerce_2401"></td><td><input type="number" name="dyed_hair_e_commerce_2401"></td><td><input type="number" name="no_book_e_commerce_2401"></td><td><input type="number" name="phone_e_commerce_2401"></td><td><input type="number" name="hygiene_e_commerce_2401"></td><td><input type="number" name="score_e_commerce_2401"></td></tr>
+                <tr><td>电商2402</td><td>陈果</td><td>33</td><td><input type="number" name="actual_e_commerce_2402"></td><td><input type="number" name="leave_e_commerce_2402"></td><td><input type="number" name="absent_e_commerce_2402"></td><td><input type="number" name="late_e_commerce_2402"></td><td><input type="number" name="sleeping_e_commerce_2402"></td><td><input type="number" name="food_e_commerce_2402"></td><td><input type="number" name="dyed_hair_e_commerce_2402"></td><td><input type="number" name="no_book_e_commerce_2402"></td><td><input type="number" name="phone_e_commerce_2402"></td><td><input type="number" name="hygiene_e_commerce_2402"></td><td><input type="number" name="score_e_commerce_2402"></td></tr>
+                <tr><td>电商2403</td><td>陈果</td><td>43</td><td><input type="number" name="actual_e_commerce_2403"></td><td><input type="number" name="leave_e_commerce_2403"></td><td><input type="number" name="absent_e_commerce_2403"></td><td><input type="number" name="late_e_commerce_2403"></td><td><input type="number" name="sleeping_e_commerce_2403"></td><td><input type="number" name="food_e_commerce_2403"></td><td><input type="number" name="dyed_hair_e_commerce_2403"></td><td><input type="number" name="no_book_e_commerce_2403"></td><td><input type="number" name="phone_e_commerce_2403"></td><td><input type="number" name="hygiene_e_commerce_2403"></td><td><input type="number" name="score_e_commerce_2403"></td></tr>
+                <tr><td>计网2401</td><td>王浩然</td><td>42</td><td><input type="number" name="actual_computer_network_2401"></td><td><input type="number" name="leave_computer_network_2401"></td><td><input type="number" name="absent_computer_network_2401"></td><td><input type="number" name="late_computer_network_2401"></td><td><input type="number" name="sleeping_computer_network_2401"></td><td><input type="number" name="food_computer_network_2401"></td><td><input type="number" name="dyed_hair_computer_network_2401"></td><td><input type="number" name="no_book_computer_network_2401"></td><td><input type="number" name="phone_computer_network_2401"></td><td><input type="number" name="hygiene_computer_network_2401"></td><td><input type="number" name="score_computer_network_2401"></td></tr>
+                <tr><td>计网2402</td><td>周焕哲</td><td>44</td><td><input type="number" name="actual_computer_network_2402"></td><td><input type="number" name="leave_computer_network_2402"></td><td><input type="number" name="absent_computer_network_2402"></td><td><input type="number" name="late_computer_network_2402"></td><td><input type="number" name="sleeping_computer_network_2402"></td><td><input type="number" name="food_computer_network_2402"></td><td><input type="number" name="dyed_hair_computer_network_2402"></td><td><input type="number" name="no_book_computer_network_2402"></td><td><input type="number" name="phone_computer_network_2402"></td><td><input type="number" name="hygiene_computer_network_2402"></td><td><input type="number" name="score_computer_network_2402"></td></tr>
+                <tr><td>计网2403</td><td>王悦</td><td>37</td><td><input type="number" name="actual_computer_network_2403"></td><td><input type="number" name="leave_computer_network_2403"></td><td><input type="number" name="absent_computer_network_2403"></td><td><input type="number" name="late_computer_network_2403"></td><td><input type="number" name="sleeping_computer_network_2403"></td><td><input type="number" name="food_computer_network_2403"></td><td><input type="number" name="dyed_hair_computer_network_2403"></td><td><input type="number" name="no_book_computer_network_2403"></td><td><input type="number" name="phone_computer_network_2403"></td><td><input type="number" name="hygiene_computer_network_2403"></td><td><input type="number" name="score_computer_network_2403"></td></tr>
+                <tr><td>计网2404</td><td>王悦</td><td>37</td><td><input type="number" name="actual_computer_network_2404"></td><td><input type="number" name="leave_computer_network_2404"></td><td><input type="number" name="absent_computer_network_2404"></td><td><input type="number" name="late_computer_network_2404"></td><td><input type="number" name="sleeping_computer_network_2404"></td><td><input type="number" name="food_computer_network_2404"></td><td><input type="number" name="dyed_hair_computer_network_2404"></td><td><input type="number" name="no_book_computer_network_2404"></td><td><input type="number" name="phone_computer_network_2404"></td><td><input type="number" name="hygiene_computer_network_2404"></td><td><input type="number" name="score_computer_network_2404"></td></tr>
+                <tr><td>软件2401</td><td>周焕哲</td><td>34</td><td><input type="number" name="actual_software_2401"></td><td><input type="number" name="leave_software_2401"></td><td><input type="number" name="absent_software_2401"></td><td><input type="number" name="late_software_2401"></td><td><input type="number" name="sleeping_software_2401"></td><td><input type="number" name="food_software_2401"></td><td><input type="number" name="dyed_hair_software_2401"></td><td><input type="number" name="no_book_software_2401"></td><td><input type="number" name="phone_software_2401"></td><td><input type="number" name="hygiene_software_2401"></td><td><input type="number" name="score_software_2401"></td></tr>
+                <tr><td>软件2402</td><td>周焕哲</td><td>37</td><td><input type="number" name="actual_software_2402"></td><td><input type="number" name="leave_software_2402"></td><td><input type="number" name="absent_software_2402"></td><td><input type="number" name="late_software_2402"></td><td><input type="number" name="sleeping_software_2402"></td><td><input type="number" name="food_software_2402"></td><td><input type="number" name="dyed_hair_software_2402"></td><td><input type="number" name="no_book_software_2402"></td><td><input type="number" name="phone_software_2402"></td><td><input type="number" name="hygiene_software_2402"></td><td><input type="number" name="score_software_2402"></td></tr>
+                <tr><td>室内2401</td><td>王浩然</td><td>27</td><td><input type="number" name="actual_interior_design_2401"></td><td><input type="number" name="leave_interior_design_2401"></td><td><input type="number" name="absent_interior_design_2401"></td><td><input type="number" name="late_interior_design_2401"></td><td><input type="number" name="sleeping_interior_design_2401"></td><td><input type="number" name="food_interior_design_2401"></td><td><input type="number" name="dyed_hair_interior_design_2401"></td><td><input type="number" name="no_book_interior_design_2401"></td><td><input type="number" name="phone_interior_design_2401"></td><td><input type="number" name="hygiene_interior_design_2401"></td><td><input type="number" name="score_interior_design_2401"></td></tr>
+                <tr><td>室内2402</td><td>王浩然</td><td>28</td><td><input type="number" name="actual_interior_design_2402"></td><td><input type="number" name="leave_interior_design_2402"></td><td><input type="number" name="absent_interior_design_2402"></td><td><input type="number" name="late_interior_design_2402"></td><td><input type="number" name="sleeping_interior_design_2402"></td><td><input type="number" name="food_interior_design_2402"></td><td><input type="number" name="dyed_hair_interior_design_2402"></td><td><input type="number" name="no_book_interior_design_2402"></td><td><input type="number" name="phone_interior_design_2402"></td><td><input type="number" name="hygiene_interior_design_2402"></td><td><input type="number" name="score_interior_design_2402"></td></tr>
+                <tr><td>数媒2401</td><td>汪财源</td><td>26</td><td><input type="number" name="actual_digital_media_2401"></td><td><input type="number" name="leave_digital_media_2401"></td><td><input type="number" name="absent_digital_media_2401"></td><td><input type="number" name="late_digital_media_2401"></td><td><input type="number" name="sleeping_digital_media_2401"></td><td><input type="number" name="food_digital_media_2401"></td><td><input type="number" name="dyed_hair_digital_media_2401"></td><td><input type="number" name="no_book_digital_media_2401"></td><td><input type="number" name="phone_digital_media_2401"></td><td><input type="number" name="hygiene_digital_media_2401"></td><td><input type="number" name="score_digital_media_2401"></td></tr>
+                <tr><td>数媒2402</td><td>汪财源</td><td>29</td><td><input type="number" name="actual_digital_media_2402"></td><td><input type="number" name="leave_digital_media_2402"></td><td><input type="number" name="absent_digital_media_2402"></td><td><input type="number" name="late_digital_media_2402"></td><td><input type="number" name="sleeping_digital_media_2402"></td><td><input type="number" name="food_digital_media_2402"></td><td><input type="number" name="dyed_hair_digital_media_2402"></td><td><input type="number" name="no_book_digital_media_2402"></td><td><input type="number" name="phone_digital_media_2402"></td><td><input type="number" name="hygiene_digital_media_2402"></td><td><input type="number" name="score_digital_media_2402"></td></tr>
+                <tr><td>数媒2403</td><td>汪财源</td><td>28</td><td><input type="number" name="actual_digital_media_2403"></td><td><input type="number" name="leave_digital_media_2403"></td><td><input type="number" name="absent_digital_media_2403"></td><td><input type="number" name="late_digital_media_2403"></td><td><input type="number" name="sleeping_digital_media_2403"></td><td><input type="number" name="food_digital_media_2403"></td><td><input type="number" name="dyed_hair_digital_media_2403"></td><td><input type="number" name="no_book_digital_media_2403"></td><td><input type="number" name="phone_digital_media_2403"></td><td><input type="number" name="hygiene_digital_media_2403"></td><td><input type="number" name="score_digital_media_2403"></td></tr>
+                <tr><td>网直2401</td><td>汪财源</td><td>24</td><td><input type="number" name="actual_web_live_2401"></td><td><input type="number" name="leave_web_live_2401"></td><td><input type="number" name="absent_web_live_2401"></td><td><input type="number" name="late_web_live_2401"></td><td><input type="number" name="sleeping_web_live_2401"></td><td><input type="number" name="food_web_live_2401"></td><td><input type="number" name="dyed_hair_web_live_2401"></td><td><input type="number" name="no_book_web_live_2401"></td><td><input type="number" name="phone_web_live_2401"></td><td><input type="number" name="hygiene_web_live_2401"></td><td><input type="number" name="score_web_live_2401"></td></tr>
+                <tr><td>大数据2501</td><td>龚世儒</td><td>18</td><td><input type="number" name="actual_big_data_2501"></td><td><input type="number" name="leave_big_data_2501"></td><td><input type="number" name="absent_big_data_2501"></td><td><input type="number" name="late_big_data_2501"></td><td><input type="number" name="sleeping_big_data_2501"></td><td><input type="number" name="food_big_data_2501"></td><td><input type="number" name="dyed_hair_big_data_2501"></td><td><input type="number" name="no_book_big_data_2501"></td><td><input type="number" name="phone_big_data_2501"></td><td><input type="number" name="hygiene_big_data_2501"></td><td><input type="number" name="score_big_data_2501"></td></tr>
+                <tr><td>电商2501</td><td>黄青</td><td>28</td><td><input type="number" name="actual_e_commerce_2501"></td><td><input type="number" name="leave_e_commerce_2501"></td><td><input type="number" name="absent_e_commerce_2501"></td><td><input type="number" name="late_e_commerce_2501"></td><td><input type="number" name="sleeping_e_commerce_2501"></td><td><input type="number" name="food_e_commerce_2501"></td><td><input type="number" name="dyed_hair_e_commerce_2501"></td><td><input type="number" name="no_book_e_commerce_2501"></td><td><input type="number" name="phone_e_commerce_2501"></td><td><input type="number" name="hygiene_e_commerce_2501"></td><td><input type="number" name="score_e_commerce_2501"></td></tr>
+                <tr><td>电商2502</td><td>黄青</td><td>28</td><td><input type="number" name="actual_e_commerce_2502"></td><td><input type="number" name="leave_e_commerce_2502"></td><td><input type="number" name="absent_e_commerce_2502"></td><td><input type="number" name="late_e_commerce_2502"></td><td><input type="number" name="sleeping_e_commerce_2502"></td><td><input type="number" name="food_e_commerce_2502"></td><td><input type="number" name="dyed_hair_e_commerce_2502"></td><td><input type="number" name="no_book_e_commerce_2502"></td><td><input type="number" name="phone_e_commerce_2502"></td><td><input type="number" name="hygiene_e_commerce_2502"></td><td><input type="number" name="score_e_commerce_2502"></td></tr>
+                <tr><td>电商2503</td><td>董雨豪</td><td>42</td><td><input type="number" name="actual_e_commerce_2503"></td><td><input type="number" name="leave_e_commerce_2503"></td><td><input type="number" name="absent_e_commerce_2503"></td><td><input type="number" name="late_e_commerce_2503"></td><td><input type="number" name="sleeping_e_commerce_2503"></td><td><input type="number" name="food_e_commerce_2503"></td><td><input type="number" name="dyed_hair_e_commerce_2503"></td><td><input type="number" name="no_book_e_commerce_2503"></td><td><input type="number" name="phone_e_commerce_2503"></td><td><input type="number" name="hygiene_e_commerce_2503"></td><td><input type="number" name="score_e_commerce_2503"></td></tr>
+                <tr><td>计网2501</td><td>杨克寒</td><td>38</td><td><input type="number" name="actual_computer_network_2501"></td><td><input type="number" name="leave_computer_network_2501"></td><td><input type="number" name="absent_computer_network_2501"></td><td><input type="number" name="late_computer_network_2501"></td><td><input type="number" name="sleeping_computer_network_2501"></td><td><input type="number" name="food_computer_network_2501"></td><td><input type="number" name="dyed_hair_computer_network_2501"></td><td><input type="number" name="no_book_computer_network_2501"></td><td><input type="number" name="phone_computer_network_2501"></td><td><input type="number" name="hygiene_computer_network_2501"></td><td><input type="number" name="score_computer_network_2501"></td></tr>
+                <tr><td>计网2502</td><td>杨克寒</td><td>37</td><td><input type="number" name="actual_computer_network_2502"></td><td><input type="number" name="leave_computer_network_2502"></td><td><input type="number" name="absent_computer_network_2502"></td><td><input type="number" name="late_computer_network_2502"></td><td><input type="number" name="sleeping_computer_network_2502"></td><td><input type="number" name="food_computer_network_2502"></td><td><input type="number" name="dyed_hair_computer_network_2502"></td><td><input type="number" name="no_book_computer_network_2502"></td><td><input type="number" name="phone_computer_network_2502"></td><td><input type="number" name="hygiene_computer_network_2502"></td><td><input type="number" name="score_computer_network_2502"></td></tr>
+                <tr><td>计网2503</td><td>杨克寒</td><td>37</td><td><input type="number" name="actual_computer_network_2503"></td><td><input type="number" name="leave_computer_network_2503"></td><td><input type="number" name="absent_computer_network_2503"></td><td><input type="number" name="late_computer_network_2503"></td><td><input type="number" name="sleeping_computer_network_2503"></td><td><input type="number" name="food_computer_network_2503"></td><td><input type="number" name="dyed_hair_computer_network_2503"></td><td><input type="number" name="no_book_computer_network_2503"></td><td><input type="number" name="phone_computer_network_2503"></td><td><input type="number" name="hygiene_computer_network_2503"></td><td><input type="number" name="score_computer_network_2503"></td></tr>
+                <tr><td>计网2504</td><td>李家勇</td><td>37</td><td><input type="number" name="actual_computer_network_2504"></td><td><input type="number" name="leave_computer_network_2504"></td><td><input type="number" name="absent_computer_network_2504"></td><td><input type="number" name="late_computer_network_2504"></td><td><input type="number" name="sleeping_computer_network_2504"></td><td><input type="number" name="food_computer_network_2504"></td><td><input type="number" name="dyed_hair_computer_network_2504"></td><td><input type="number" name="no_book_computer_network_2504"></td><td><input type="number" name="phone_computer_network_2504"></td><td><input type="number" name="hygiene_computer_network_2504"></td><td><input type="number" name="score_computer_network_2504"></td></tr>
+                <tr><td>计网2505</td><td>李家勇</td><td>36</td><td><input type="number" name="actual_computer_network_2505"></td><td><input type="number" name="leave_computer_network_2505"></td><td><input type="number" name="absent_computer_network_2505"></td><td><input type="number" name="late_computer_network_2505"></td><td><input type="number" name="sleeping_computer_network_2505"></td><td><input type="number" name="food_computer_network_2505"></td><td><input type="number" name="dyed_hair_computer_network_2505"></td><td><input type="number" name="no_book_computer_network_2505"></td><td><input type="number" name="phone_computer_network_2505"></td><td><input type="number" name="hygiene_computer_network_2505"></td><td><input type="number" name="score_computer_network_2505"></td></tr>
+                <tr><td>AI2501</td><td>龚世儒</td><td>41</td><td><input type="number" name="actual_ai_2501"></td><td><input type="number" name="leave_ai_2501"></td><td><input type="number" name="absent_ai_2501"></td><td><input type="number" name="late_ai_2501"></td><td><input type="number" name="sleeping_ai_2501"></td><td><input type="number" name="food_ai_2501"></td><td><input type="number" name="dyed_hair_ai_2501"></td><td><input type="number" name="no_book_ai_2501"></td><td><input type="number" name="phone_ai_2501"></td><td><input type="number" name="hygiene_ai_2501"></td><td><input type="number" name="score_ai_2501"></td></tr>
+                <tr><td>AI2502</td><td>龚世儒</td><td>40</td><td><input type="number" name="actual_ai_2502"></td><td><input type="number" name="leave_ai_2502"></td><td><input type="number" name="absent_ai_2502"></td><td><input type="number" name="late_ai_2502"></td><td><input type="number" name="sleeping_ai_2502"></td><td><input type="number" name="food_ai_2502"></td><td><input type="number" name="dyed_hair_ai_2502"></td><td><input type="number" name="no_book_ai_2502"></td><td><input type="number" name="phone_ai_2502"></td><td><input type="number" name="hygiene_ai_2502"></td><td><input type="number" name="score_ai_2502"></td></tr>
+                <tr><td>软件2501</td><td>李家勇</td><td>41</td><td><input type="number" name="actual_software_2501"></td><td><input type="number" name="leave_software_2501"></td><td><input type="number" name="absent_software_2501"></td><td><input type="number" name="late_software_2501"></td><td><input type="number" name="sleeping_software_2501"></td><td><input type="number" name="food_software_2501"></td><td><input type="number" name="dyed_hair_software_2501"></td><td><input type="number" name="no_book_software_2501"></td><td><input type="number" name="phone_software_2501"></td><td><input type="number" name="hygiene_software_2501"></td><td><input type="number" name="score_software_2501"></td></tr>
+                <tr><td>室内2501</td><td>金佳玉</td><td>26</td><td><input type="number" name="actual_interior_design_2501"></td><td><input type="number" name="leave_interior_design_2501"></td><td><input type="number" name="absent_interior_design_2501"></td><td><input type="number" name="late_interior_design_2501"></td><td><input type="number" name="sleeping_interior_design_2501"></td><td><input type="number" name="food_interior_design_2501"></td><td><input type="number" name="dyed_hair_interior_design_2501"></td><td><input type="number" name="no_book_interior_design_2501"></td><td><input type="number" name="phone_interior_design_2501"></td><td><input type="number" name="hygiene_interior_design_2501"></td><td><input type="number" name="score_interior_design_2501"></td></tr>
+                <tr><td>数媒2501</td><td>金佳玉</td><td>35</td><td><input type="number" name="actual_digital_media_2501"></td><td><input type="number" name="leave_digital_media_2501"></td><td><input type="number" name="absent_digital_media_2501"></td><td><input type="number" name="late_digital_media_2501"></td><td><input type="number" name="sleeping_digital_media_2501"></td><td><input type="number" name="food_digital_media_2501"></td><td><input type="number" name="dyed_hair_digital_media_2501"></td><td><input type="number" name="no_book_digital_media_2501"></td><td><input type="number" name="phone_digital_media_2501"></td><td><input type="number" name="hygiene_digital_media_2501"></td><td><input type="number" name="score_digital_media_2501"></td></tr>
+                <tr><td>数媒2502</td><td>金佳玉</td><td>37</td><td><input type="number" name="actual_digital_media_2502"></td><td><input type="number" name="leave_digital_media_2502"></td><td><input type="number" name="absent_digital_media_2502"></td><td><input type="number" name="late_digital_media_2502"></td><td><input type="number" name="sleeping_digital_media_2502"></td><td><input type="number" name="food_digital_media_2502"></td><td><input type="number" name="dyed_hair_digital_media_2502"></td><td><input type="number" name="no_book_digital_media_2502"></td><td><input type="number" name="phone_digital_media_2502"></td><td><input type="number" name="hygiene_digital_media_2502"></td><td><input type="number" name="score_digital_media_2502"></td></tr>
+                <tr><td>网直2501</td><td>高岚</td><td>36</td><td><input type="number" name="actual_web_live_2501"></td><td><input type="number" name="leave_web_live_2501"></td><td><input type="number" name="absent_web_live_2501"></td><td><input type="number" name="late_web_live_2501"></td><td><input type="number" name="sleeping_web_live_2501"></td><td><input type="number" name="food_web_live_2501"></td><td><input type="number" name="dyed_hair_web_live_2501"></td><td><input type="number" name="no_book_web_live_2501"></td><td><input type="number" name="phone_web_live_2501"></td><td><input type="number" name="hygiene_web_live_2501"></td><td><input type="number" name="score_web_live_2501"></td></tr>
+                <tr><td>网直2502</td><td>高岚</td><td>41</td><td><input type="number" name="actual_web_live_2502"></td><td><input type="number" name="leave_web_live_2502"></td><td><input type="number" name="absent_web_live_2502"></td><td><input type="number" name="late_web_live_2502"></td><td><input type="number" name="sleeping_web_live_2502"></td><td><input type="number" name="food_web_live_2502"></td><td><input type="number" name="dyed_hair_web_live_2502"></td><td><input type="number" name="no_book_web_live_2502"></td><td><input type="number" name="phone_web_live_2502"></td><td><input type="number" name="hygiene_web_live_2502"></td><td><input type="number" name="score_web_live_2502"></td></tr>
+                <tr><td>网直2503</td><td>董雨豪</td><td>42</td><td><input type="number" name="actual_web_live_2503"></td><td><input type="number" name="leave_web_live_2503"></td><td><input type="number" name="absent_web_live_2503"></td><td><input type="number" name="late_web_live_2503"></td><td><input type="number" name="sleeping_web_live_2503"></td><td><input type="number" name="food_web_live_2503"></td><td><input type="number" name="dyed_hair_web_live_2503"></td><td><input type="number" name="no_book_web_live_2503"></td><td><input type="number" name="phone_web_live_2503"></td><td><input type="number" name="hygiene_web_live_2503"></td><td><input type="number" name="score_web_live_2503"></td></tr>
+                <tr><td colspan="14">说明：总分100分，采取扣分制，旷课1分/人，迟到以及违纪情况均0.5分/人</td></tr>
+            </tbody>
+        </table>
+        <div class="leave-verify"><span class="leave-label">请假条均</span><select name="leave_verified" class="leave-select"><option value="x">x</option><option value="已">已</option></select><span class="leave-label">核实</span></div>
+        <div class="submit-section">
+            <button type="button" class="submit-btn" onclick="submitAttendance()">提交</button>
+        </div>
+        <div id="message" class="message" style="display: none;"></div>
+        </div>
+    </div>
+    <script>
+        document.querySelectorAll('tbody tr').forEach(function(tr) {
+            var leaveCell = tr.cells[4];
+            if (leaveCell) {
+                var input = leaveCell.querySelector('input');
+                if (input) {
+                    function checkLeave() {
+                        var val = parseInt(input.value);
+                        if (val >= 5) {
+                            leaveCell.classList.add('td-red');
+                        } else {
+                            leaveCell.classList.remove('td-red');
+                        }
+                    }
+                    input.addEventListener('input', checkLeave);
+                    input.addEventListener('change', checkLeave);
+                }
+            }
+        });
+
+        document.querySelectorAll('.leave-select').forEach(function(select) {
+            function updateColor() {
+                if (select.value === 'x') {
+                    select.style.color = '#999';
+                    select.classList.remove('hided-arrow');
+                } else {
+                    select.style.color = '#000';
+                    select.classList.add('hided-arrow');
+                }
+            }
+            select.addEventListener('change', updateColor);
+            updateColor();
+        });
+
+        function showMessage(text, type) {
+            var msg = document.getElementById('message');
+            msg.textContent = text;
+            msg.className = 'message ' + type;
+            msg.style.display = 'block';
+            if (type !== 'loading') {
+                setTimeout(function() {
+                    msg.style.display = 'none';
+                }, 3000);
+            }
+        }
+
+        function submitAttendance() {
+            var submitBtn = document.querySelector('.submit-btn');
+            submitBtn.disabled = true;
+            showMessage('正在提交...', 'loading');
+
+            var formData = {
+                year: 2026,
+                month: document.querySelector('input[name="month"]').value,
+                day: document.querySelector('input[name="day"]').value,
+                weekday: document.querySelector('input[name="weekday"]').value,
+                period: document.querySelector('input[name="period"]').value,
+                checker: document.querySelector('input[name="checker"]').value,
+                leaveVerified: document.querySelector('select[name="leave_verified"]').value,
+                records: []
+            };
+
+            document.querySelectorAll('tbody tr').forEach(function(tr) {
+                var cells = tr.cells;
+                if (cells && cells.length >= 14) {
+                    var inputs = [];
+                    var hasInput = false;
+                    for (var i = 3; i < 14; i++) {
+                        var input = cells[i]?.querySelector('input');
+                        inputs.push(input);
+                        if (input) hasInput = true;
+                    }
+                    if (hasInput) {
+                        var record = {
+                            className: cells[0]?.textContent || '',
+                            counselor: cells[1]?.textContent || '',
+                            expected: cells[2]?.textContent || '',
+                            actual: inputs[0]?.value || '',
+                            leave: inputs[1]?.value || '',
+                            absent: inputs[2]?.value || '',
+                            late: inputs[3]?.value || '',
+                            sleeping: inputs[4]?.value || '',
+                            food: inputs[5]?.value || '',
+                            dyedHair: inputs[6]?.value || '',
+                            noBook: inputs[7]?.value || '',
+                            phone: inputs[8]?.value || '',
+                            hygiene: inputs[9]?.value || '',
+                            score: inputs[10]?.value || ''
+                        };
+                        formData.records.push(record);
+                    }
+                }
+            });
+
+            if (!formData.month || !formData.day || !formData.checker) {
+                submitBtn.disabled = false;
+                showMessage('请填写完整信息（日期和检查人）', 'error');
+                return;
+            }
+            
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', 'http://localhost:3000/api/attendance', true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            
+            xhr.onload = function() {
+                submitBtn.disabled = false;
+                if (xhr.status >= 200 && xhr.status < 300) {
+                    try {
+                        var data = JSON.parse(xhr.responseText);
+                        if (data.success) {
+                            showMessage('提交成功！', 'success');
+                        } else {
+                            showMessage('提交失败：' + data.message, 'error');
+                        }
+                    } catch (e) {
+                        showMessage('响应解析错误: ' + e.message, 'error');
+                    }
+                } else {
+                    try {
+                        var errData = JSON.parse(xhr.responseText);
+                        showMessage('服务器错误 ' + xhr.status + ': ' + (errData.message || '未知错误'), 'error');
+                    } catch (e) {
+                        showMessage('服务器错误: ' + xhr.status, 'error');
+                    }
+                }
+            };
+            
+            xhr.onerror = function() {
+                submitBtn.disabled = false;
+                showMessage('网络错误，请检查服务器是否启动', 'error');
+            };
+            
+            xhr.ontimeout = function() {
+                submitBtn.disabled = false;
+                showMessage('请求超时', 'error');
+            };
+            
+            xhr.timeout = 10000;
+            xhr.send(JSON.stringify(formData));
+        }
+    </script>
+</body>
+</html>
